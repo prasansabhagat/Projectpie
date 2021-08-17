@@ -5,7 +5,7 @@ import random
 
 root = tkt.Tk()
 root.geometry("800x800")
-root.title("Message Encryption and Decryption")  
+root.title("Message Encryption and Decryption")
 
 
 Tops = Frame(root, width=800)
@@ -21,23 +21,20 @@ maintxt = Label(Tops, font=('helvetica', 30, 'bold'),
 maintxt.pack()
 
 
-
 Msg = StringVar()
 key = StringVar()
 mode = StringVar()
 Result = StringVar()
 
 
-
 lMsg = Label(area, font=('arial', 10, 'bold'),
-                text="Message",bd=5, fg="Black")
+             text="Message", bd=5, fg="Black")
 lMsg.grid(row=0, column=0)
 
 txtMsg = Entry(area, font=('arial', 8),
-                textvariable=Msg, insertwidth=4,
-                justify='right',bd=5, bg="#BBBBFF")
+               textvariable=Msg, insertwidth=4,
+               justify='right', bd=5, bg="#BBBBFF")
 txtMsg.grid(row=0, column=1)
-
 
 
 lKey = Label(area, font=('arial', 10, 'bold'),
@@ -45,10 +42,9 @@ lKey = Label(area, font=('arial', 10, 'bold'),
 lKey.grid(row=1, column=0)
 
 txtKey = Entry(area, font=('arial', 8),
-                textvariable=key, insertwidth=4,
+               textvariable=key, insertwidth=4,
                justify='right', bd=5, bg="#BBBBFF")
 txtKey.grid(row=1, column=1)
-
 
 
 lResult = Label(area, font=('arial', 10, 'bold'),
@@ -56,10 +52,9 @@ lResult = Label(area, font=('arial', 10, 'bold'),
 lResult.grid(row=1, column=2)
 
 txtResult = Entry(area, font=('arial', 8),
-               textvariable=Result, insertwidth=4,
+                  textvariable=Result, insertwidth=4,
                   justify='right', bd=5, bg="#BBBBFF")
 txtResult.grid(row=1, column=3)
-
 
 
 lMode = Label(area, font=('arial', 10, 'bold'),
@@ -72,30 +67,24 @@ txtMode = Entry(area, font=('arial', 8),
 txtMode.grid(row=2, column=1)
 
 
-def encode(key, msg):
+def xor(key, msg):
     enc = []
-    for i in range(len(msg)):
-        key_c = key[i % len(key)]
-        enc_c = chr((ord(msg[i]) +
-                     ord(key_c)) % 256)
-        enc.append(enc_c)
+    length = min(len(key), len(msg))
+    for i in range(length):
+        
+        enc = bytes(key[i] ^ msg[i])
         print("enc:", enc)
     return base64.urlsafe_b64encode("".join(enc).encode()).decode()
 
 #chr()- integer to character
 #ord()- reverse
 
+
 def decode(key, enc):
     dec = []
-
     enc = base64.urlsafe_b64decode(enc).decode()
-    for i in range(len(enc)):
-        key_c = key[i % len(key)]
-        dec_c = chr((256 + ord(enc[i]) -
-                     ord(key_c)) % 256)
-
-        dec.append(dec_c)
-        print("dec:", dec)
+    dec = xor(key, enc)
+    print("dec:", dec)
     return "".join(dec)
 
 
@@ -105,15 +94,13 @@ def Results():
     m = mode.get()
 
     if (m == 'e'):
-        Result.set(encode(k, msg))
+        Result.set(xor(k, msg))
     else:
-        Result.set(decode(k, msg))
-
+        Result.set(decode(k, enc))
 
 
 def qExit():
     root.destroy()
-
 
 
 def Reset():
@@ -122,8 +109,6 @@ def Reset():
     key.set("")
     mode.set("")
     Result.set("")
-
-
 
 
 btnTotal = Button(area, padx=6, pady=3, bd=5, fg="black",
@@ -144,5 +129,4 @@ btnExit = Button(area, padx=6, pady=3, bd=5,
                  command=qExit).grid(row=7, column=3)
 
 
-
-root.mainloop()     
+root.mainloop()
